@@ -6,6 +6,7 @@ def advanced_example_using_database():
    REPORTS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'reports')
    input_file = os.path.join(REPORTS_DIR, 'hello_world.jrxml')
    output_file = os.path.join(REPORTS_DIR, 'hello_world')
+   print(input_file)
    # Define a conexão com InterSystems Cache
    connection_string = 'jdbc:Cache://localhost:57772/namespace'
    '''conn = {
@@ -16,7 +17,7 @@ def advanced_example_using_database():
      'database': 'DB_DATABASE',
      'schema': 'DB_SCHEMA',
      'port': '5432'
-     'jdbc_dir': '<path>/postgres.jar'
+     'jdbc_dir': 'lib/cachejdbc.jar'
    }'''
    pyreportjasper = PyReportJasper()
    pyreportjasper.config(
