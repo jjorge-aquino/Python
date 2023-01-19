@@ -2,12 +2,14 @@ import jaydebeapi
 from jpype import *
 import os
 
+RESOURCES_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'lib')
 # Adiciona o driver JDBC ao classpath
-jarfile="C:/InterSystems/Cache16/dev/java/lib/JDK17/cachejdbc.jar"
+jarfile=os.path.join(os.path.abspath(os.path.dirname(__file__)), "lib","cachejdbc.jar")
+print(jarfile)
 os.environ['CLASSPATH'] = jarfile
 # Configura a conexão
-jdbc_url = "jdbc:Cache://www2.tinus.com.br:1972/CABO"
-jdbc_driver = "com.intersys.jdbc.CacheDriver"
+jdbc_url = r"jdbc:Cache://www2.tinus.com.br:1972/CABO"
+jdbc_driver = r"com.intersys.jdbc.CacheDriver"
 username = "jorge"
 password = "canario123"
 
