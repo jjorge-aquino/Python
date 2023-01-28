@@ -6,8 +6,8 @@ REPORTS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'reports'
 
 
 def example_csv():
-    input_file = os.path.join(REPORTS_DIR, 'csv.jasper')
-    output_file = os.path.join(REPORTS_DIR, 'csv')
+    input_file = os.path.join(REPORTS_DIR, 'csv.jrxml')
+    output_file = os.path.join(REPORTS_DIR, 'report')
     pyreportjasper = PyReportJasper()
     pyreportjasper.config(
         input_file,
