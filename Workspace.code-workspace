@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../JavaScript"
+		},
+		{
+			"path": "../TreinamentoIRIS"
 		}
 	],
 	"settings": {}
