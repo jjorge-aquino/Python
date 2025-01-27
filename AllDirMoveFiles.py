@@ -2,27 +2,9 @@ import os
 import shutil
 import subprocess
 import logging
-import datetime
 
 # Configuração de logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-'''
-def organizar_arquivos(pasta_origem):
-    logging.info(f'Organizando arquivos na pasta: {pasta_origem}')
-    for nome_arquivo in os.listdir(pasta_origem):
-        if nome_arquivo.endswith('.xml'):
-            logging.debug(f'Arquivo XML encontrado: {nome_arquivo}')
-            ano_mes = "20" + nome_arquivo.split('-')[4][:4]
-            pasta_destino = os.path.join(pasta_origem, ano_mes)
-
-            if not os.path.exists(pasta_destino):
-                os.makedirs(pasta_destino)
-                logging.debug(f'Pasta criada: {pasta_destino}')
-
-            shutil.move(os.path.join(pasta_origem, nome_arquivo), pasta_destino)
-            logging.debug(f'Arquivo movido para: {pasta_destino}')
-    logging.info(f'Organização de arquivos concluída na pasta: {pasta_origem}')
-'''
 
 def organizar_arquivos(pasta_origem):
     '''
@@ -34,35 +16,28 @@ def organizar_arquivos(pasta_origem):
     '''
     logging.info(f'Organizando arquivos na pasta: {pasta_origem}')
 
-    # Lista apenas os arquivos diretamente na pasta origem
     for nome_arquivo in os.listdir(pasta_origem):
         caminho_arquivo = os.path.join(pasta_origem, nome_arquivo)
 
-        # Processa apenas arquivos XML e ignora subpastas
-        if os.path.isfile(caminho_arquivo) and nome_arquivo.endswith('.xml'):
+        if os.path.isfile(caminho_arquivo) and (nome_arquivo.endswith('.xml') or nome_arquivo.endswith('.txt')):
             logging.debug(f'Arquivo XML encontrado: {nome_arquivo}')
             
             try:
-                # Extrai o ano/mês do nome do arquivo
-                ano_mes = "20" + nome_arquivo.split('-')[4][:4]
+                # Extrai o valor do antepenúltimo campo do nome do arquivo
+                campos = nome_arquivo.split('-')
+                ano_mes = "20" + campos[-3][:4]  # Antepenúltimo campo
             except IndexError:
                 logging.warning(f'Nome de arquivo inesperado, ignorando: {nome_arquivo}')
                 continue
 
-            # Define a pasta de destino
             pasta_destino = os.path.join(pasta_origem, ano_mes)
-
-            # Cria a pasta de destino, se necessário
             os.makedirs(pasta_destino, exist_ok=True)
             logging.debug(f'Pasta criada: {pasta_destino}')
 
-            # Move o arquivo para a pasta de destino
             shutil.move(caminho_arquivo, os.path.join(pasta_destino, nome_arquivo))
             logging.debug(f'Arquivo movido para: {pasta_destino}')
     
     logging.info(f'Organização de arquivos concluída na pasta: {pasta_origem}')
-
-
 
 
 def compactar_pasta(pasta):
@@ -72,26 +47,32 @@ def compactar_pasta(pasta):
         rar_file = novo_caminho + '.rar'
         logging.info(f'Compactando pasta: {pasta} para {rar_file}')
         subprocess.run([rar_path, 'a', '-ep', '-m5', '-idq', '-ibck', rar_file, pasta])
-        #shutil.rmtree(pasta)
+        # shutil.rmtree(pasta)
         logging.info(f'Compactação concluída: {pasta}')
+
 
 def processar_diretorios(pasta_raiz):
     """
-    Processa apenas as primeiras subpastas diretamente dentro da pasta raiz.
+    Processa apenas as primeiras subpastas diretamente dentro da pasta raiz
+    e organiza arquivos XML, incluindo a pasta 'xmlnotas' se ela existir.
     
     Args:
         pasta_raiz (str): Caminho da pasta raiz onde estão as subpastas.
     """
     logging.info(f'Processando diretórios na raiz: {pasta_raiz}')
 
-    # Percorre apenas o primeiro nível de subpastas
     for nome_diretorio in os.listdir(pasta_raiz):
         pasta_origem = os.path.join(pasta_raiz, nome_diretorio)
 
-        # Verifica se é um diretório
         if os.path.isdir(pasta_origem):
             logging.debug(f'Pasta encontrada: {pasta_origem}')
             organizar_arquivos(pasta_origem)
+
+            # Verifica se há uma pasta chamada 'XMLNotas' e organiza os arquivos nela
+            xmlnotas_path = os.path.join(pasta_origem, 'XMLNotas')
+            if os.path.isdir(xmlnotas_path):
+                logging.debug(f'Pasta "XMLNotas" encontrada: {xmlnotas_path}')
+                organizar_arquivos(xmlnotas_path)
 
             # (Opcional) Listar subpastas diretas na pasta_origem
             pastas = [
@@ -107,8 +88,8 @@ def processar_diretorios(pasta_raiz):
             '''
 
 
-# Caminho para a pasta raiz D:/Prefeituras/ArquivosNFSeAssinados/
-pasta_raiz = 'D:\\Siat\\xml\\'
-
+# Caminho para a pasta raiz
+pasta_raiz = 'D:/Prefeituras/ArquivosNFSeAssinados/'
+#pasta_raiz = 'G:\\Backup\\worknotas\\'
 processar_diretorios(pasta_raiz)
 logging.info('Processamento completo.')
